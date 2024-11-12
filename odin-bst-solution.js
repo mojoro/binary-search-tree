@@ -99,9 +99,9 @@ class Tree {
     if (array.length === 0) {
       return null; // Return null for empty arrays
     } else if (array.length === 1) {
-      return new Node(array[0]); // Return a single node for single-element arrays
+      return new Node(array[0]);
     } else if (array.length > 1) {
-      const mid = Math.floor(array.length / 2); // Use Math.floor for midpoint
+      const mid = Math.floor(array.length / 2);
       const node = new Node(array[mid]);
       const leftArray = array.slice(0, mid);
       const rightArray = array.slice(mid + 1);
