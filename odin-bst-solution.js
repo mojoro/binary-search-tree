@@ -1,4 +1,11 @@
+/**
+ * Represents a node in the binary search tree.
+ */
 class Node {
+  /**
+   * Creates a new Node.
+   * @param {any} data - The data stored in the node.
+   */
   constructor(data = null) {
     this.data = data;
     this.left = null;
@@ -6,17 +13,35 @@ class Node {
   }
 }
 
+/**
+ * Represents a binary search tree.
+ */
 class Tree {
+  /**
+   * Creates a new Tree.
+   * @param {Array} array - The array to build the tree from.
+   */
   constructor(array) {
     this.root = this.buildTree(array);
   }
 
+  /**
+   * Builds a balanced binary search tree from a sorted array.
+   * @param {Array} array - The array to build the tree from.
+   * @returns {Node} The root node of the balanced binary search tree.
+   */
   buildTree(array) {
     const sorted = this.sort(array);
     const sortedNoDupes = this.removeDuplicates(sorted);
     return this.sortedArrayToBST(sortedNoDupes);
   }
 
+  /**
+   * Sorts an array using merge sort.
+   * @param {Array} arr - The array to sort.
+   * @param {Array} [sortedArray=[]] - The array to store the sorted elements.
+   * @returns {Array} The sorted array.
+   */
   sort(arr, sortedArray = []) {
     if (arr.length == 1) {
       return arr;
@@ -47,6 +72,11 @@ class Tree {
     return sortedArray;
   }
 
+  /**
+   * Removes duplicates from a sorted array.
+   * @param {Array} array - The sorted array to remove duplicates from.
+   * @returns {Array} The array with duplicates removed.
+   */
   removeDuplicates(array) {
     const noDuplicates = [];
     noDuplicates.push(array[0]);
@@ -57,10 +87,14 @@ class Tree {
         noDuplicates.push(array[i]);
       }
     }
-
     return noDuplicates;
   }
 
+  /**
+   * Converts a sorted array to a balanced binary search tree.
+   * @param {Array} array - The sorted array to convert.
+   * @returns {Node} The root node of the balanced binary search tree.
+   */
   sortedArrayToBST(array) {
     if (array.length === 0) {
       return null; // Return null for empty arrays
@@ -82,8 +116,11 @@ class Tree {
     }
   }
 
-  // start at root, if value < node, check node.left, else check node.right.
-  // if checked position is null, insert value
+  /**
+   * Inserts a value into the binary search tree.
+   * @param {any} value - The value to insert.
+   * @param {Node} [node=this.root] - The current node.
+   */
   insert(value, node = this.root) {
     if (value < node.data) {
       if (node.left) this.insert(value, node.left);
@@ -94,6 +131,12 @@ class Tree {
     }
   }
 
+  /**
+   * Deletes a value from the binary search tree.
+   * @param {any} value - The value to delete.
+   * @param {Node} [node=this.root] - The current node.
+   * @param {Object} [parent=null] - The parent node.
+   */
   deleteItem(value, node = this.root, parent = null) {
     const returnNodeInfo = (value, node, parent) => {
       if (!node) return null;
@@ -143,6 +186,12 @@ class Tree {
     }
   }
 
+  /**
+   * Finds a value in the binary search tree.
+   * @param {any} value - The value to find.
+   * @param {Node} [node=this.root] - The current node.
+   * @returns {Node|null} The node containing the value, or null if not found.
+   */
   find(value, node = this.root) {
     if (!node) return null;
 
@@ -155,7 +204,10 @@ class Tree {
     }
   }
 
-  // breadth-first search, implementing callback on each node
+  /**
+   * Performs a level-order traversal of the tree.
+   * @param {Function} callback - The callback function to execute on each node.
+   */
   levelOrder(callback) {
     if (!callback) throw new Error("Please pass in callback function");
     let q = [this.root];
@@ -170,7 +222,11 @@ class Tree {
     }
   }
 
-  //depth-first DLR
+  /**
+   * Performs a pre-order traversal of the tree.
+   * @param {Function} callback - The callback function to execute on each node.
+   * @param {Node} [node=this.root] - The current node.
+   */
   preOrder(callback, node = this.root) {
     if (!callback) throw new Error("Please pass in callback function");
     if (node == null) return;
@@ -179,7 +235,11 @@ class Tree {
     this.preOrder(callback, node.right);
   }
 
-  //depth-first LDR
+  /**
+   * Performs an in-order traversal of the tree.
+   * @param {Function} callback - The callback function to execute on each node.
+   * @param {Node} [node=this.root] - The current node.
+   */
   inOrder(callback, node = this.root) {
     if (!callback) throw new Error("Please pass in callback function");
     if (node == null) return;
@@ -188,7 +248,11 @@ class Tree {
     this.inOrder(callback, node.right);
   }
 
-  //depth-first LRD
+  /**
+   * Performs a post-order traversal of the tree.
+   * @param {Function} callback - The callback function to execute on each node.
+   * @param {Node} [node=this.root] - The current node.
+   */
   postOrder(callback, node = this.root) {
     if (!callback) throw new Error("Please pass in callback function");
     if (node == null) return;
@@ -197,6 +261,11 @@ class Tree {
     callback(node);
   }
 
+  /**
+   * Calculates the height of a node in the tree.
+   * @param {Node} node - The node to calculate the height of.
+   * @returns {number} The height of the node.
+   */
   height(node) {
     if (!node) return -1;
     let leftHeight = this.height(node.left);
@@ -204,6 +273,11 @@ class Tree {
     return Math.max(leftHeight, rightHeight) + 1;
   }
 
+  /**
+   * Calculates the depth of a node in the tree.
+   * @param {Node} node - The node to calculate the depth of.
+   * @returns {number} The depth of the node.
+   */
   depth(node) {
     let currentNode = this.root;
     let depth = 0;
@@ -219,6 +293,11 @@ class Tree {
     return depth;
   }
 
+  /**
+   * Checks if the tree is balanced.
+   * @param {Node} [node=this.root] - The current node.
+   * @returns {boolean} True if the tree is balanced, false otherwise.
+   */
   isBalanced(node = this.root) {
     if (!node) return -1;
     let leftHeight = this.height(node.left);
@@ -226,15 +305,24 @@ class Tree {
     return Math.abs(leftHeight - rightHeight) < 2;
   }
 
+  /**
+   * Rebalances the tree.
+   */
   rebalance() {
     const inorder = [];
-    tree.inOrder((node) => {
+    this.inOrder((node) => {
       inorder.push(node.data);
     });
     this.root = this.sortedArrayToBST(inorder);
   }
 }
 
+/**
+ * Pretty prints the tree.
+ * @param {Node} node - The current node.
+ * @param {string} [prefix=""] - The prefix for the current node.
+ * @param {boolean} [isLeft=true] - Whether the current node is a left child.
+ */
 const prettyPrint = (node, prefix = "", isLeft = true) => {
   if (node === null) {
     return;
@@ -248,6 +336,12 @@ const prettyPrint = (node, prefix = "", isLeft = true) => {
   }
 };
 
+/**
+ * Generates an array of random numbers.
+ * @param {number} arraySize - The size of the array.
+ * @param {number} [minSize=0] - The minimum size of the random numbers.
+ * @returns {Array} The array of random numbers.
+ */
 function arrayOfRandomNumbers(arraySize, minSize = 0) {
   const array = [];
   for (let i = 0; i < arraySize; i++) {
