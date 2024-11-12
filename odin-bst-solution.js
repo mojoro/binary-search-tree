@@ -83,11 +83,78 @@ class Tree {
     }
   }
 
-  insert(value) {}
+  // start at root, if value < node, check node.left, else check node.right.
+  // if checked position is null, insert value
+  insert(value, node = this.root) {
+    if (value < node.data) {
+      if (node.left) this.insert(value, node.left);
+      else node.left = new Node(value);
+    } else if (value > node.data) {
+      if (node.right) this.insert(value, node.right);
+      else node.right = new Node(value);
+    }
+  }
 
-  deleteItem(value) {}
+  deleteItem(value, node = this.root, parent = null) {
+    const returnNodeInfo = (value, node, parent) => {
+      if (!node) return null;
 
-  find(value) {}
+      if (value < node.data) {
+        parent = { node: node, direction: "left" };
+        return returnNodeInfo(value, node.left, parent);
+      } else if (value > node.data) {
+        parent = { node: node, direction: "right" };
+        return returnNodeInfo(value, node.right, parent);
+      } else {
+        return { node, parent };
+      }
+    };
+
+    const returnLastRightNode = (node) => {
+      if (!node) {
+        return null;
+      } else if (node.right) {
+        return returnLastRightNode(node.right);
+      } else return node;
+    };
+
+    const deleteNodeInfo = returnNodeInfo(value, node, parent);
+    const nodeToDelete = deleteNodeInfo.node;
+
+    // Check if the targeted node is the root node.
+    if (nodeToDelete == node) {
+      const lastRightNode = returnLastRightNode(node.left);
+      this.deleteItem(lastRightNode.data);
+      node.data = lastRightNode.data;
+      return;
+    }
+
+    const parentOfDeleted = deleteNodeInfo.parent.node;
+    const direction = deleteNodeInfo.parent.direction;
+    const leftChild = nodeToDelete.left;
+    const rightChild = nodeToDelete.right;
+
+    if (!leftChild && !rightChild) parentOfDeleted[direction] = null;
+    else if (leftChild && !rightChild) parentOfDeleted[direction] = leftChild;
+    else if (!leftChild && rightChild) parentOfDeleted[direction] = rightChild;
+    else if (leftChild && rightChild) {
+      const lastRightNode = returnLastRightNode(leftChild);
+      this.deleteItem(lastRightNode.data);
+      parentOfDeleted[direction].data = lastRightNode.data;
+    }
+  }
+
+  find(value, node = this.root) {
+    if (!node) return null;
+
+    if (value < node.data) {
+      return this.find(value, node.left);
+    } else if (value > node.data) {
+      return this.find(value, node.right);
+    } else {
+      return node;
+    }
+  }
 
   levelOrder(callback) {}
 
@@ -126,7 +193,11 @@ function arrayOfRandomNumbers(arraySize, minSize = 0) {
   return array;
 }
 
-console.log(arrayOfRandomNumbers(15));
-
 const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
+prettyPrint(tree.root);
+tree.deleteItem(23);
+tree.insert(13);
+tree.insert(12);
+tree.insert(14);
+tree.deleteItem(8);
 prettyPrint(tree.root);
