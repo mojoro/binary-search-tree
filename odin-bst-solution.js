@@ -156,15 +156,69 @@ class Tree {
     }
   }
 
-  levelOrder(callback) {}
+  // breadth-first search, implementing callback on each node
+  levelOrder(callback) {
+    if (!callback) throw new Error("Please pass in callback function");
+    let q = [this.root];
+    let frontIndex = 0;
 
-  inOrder(callback) {}
+    while (frontIndex < q.length) {
+      let front = q[frontIndex];
+      callback(front);
+      if (front.left) q.push(front.left);
+      if (front.right) q.push(front.right);
+      frontIndex++;
+    }
+  }
 
-  postOrder(callback) {}
+  //depth-first DLR
+  preOrder(callback, node = this.root) {
+    if (!callback) throw new Error("Please pass in callback function");
+    if (node == null) return;
+    callback(node);
+    this.preOrder(callback, node.left);
+    this.preOrder(callback, node.right);
+  }
 
-  height(node) {}
+  //depth-first LDR
+  inOrder(callback, node = this.root) {
+    if (!callback) throw new Error("Please pass in callback function");
+    if (node == null) return;
+    this.inOrder(callback, node.left);
+    callback(node);
+    this.inOrder(callback, node.right);
+  }
 
-  depth(node) {}
+  //depth-first LRD
+  postOrder(callback, node = this.root) {
+    if (!callback) throw new Error("Please pass in callback function");
+    if (node == null) return;
+    this.postOrder(callback, node.left);
+    this.postOrder(callback, node.right);
+    callback(node);
+  }
+
+  height(node) {
+    if (!node) return -1;
+    let leftHeight = this.height(node.left);
+    let rightHeight = this.height(node.right);
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+
+  depth(node) {
+    let currentNode = this.root;
+    let depth = 0;
+    while (currentNode.data != node.data) {
+      if (currentNode.data > node.data) {
+        depth++;
+        currentNode = currentNode.left;
+      } else {
+        depth++;
+        currentNode = currentNode.right;
+      }
+    }
+    return depth;
+  }
 
   isBalanced() {}
 
@@ -201,3 +255,33 @@ tree.insert(12);
 tree.insert(14);
 tree.deleteItem(8);
 prettyPrint(tree.root);
+
+console.log("Level Order");
+const level = [];
+tree.levelOrder((node) => {
+  level.push(node.data);
+});
+console.log(level);
+
+console.log("Preorder");
+const preorder = [];
+tree.preOrder((node) => {
+  preorder.push(node.data);
+});
+console.log(preorder);
+
+console.log("Inorder");
+const inorder = [];
+tree.inOrder((node) => {
+  inorder.push(node.data);
+});
+console.log(inorder);
+
+console.log("Postorder");
+const postorder = [];
+tree.postOrder((node) => {
+  postorder.push(node.data);
+});
+console.log(postorder);
+
+console.log(tree.depth(tree.find(7)));
