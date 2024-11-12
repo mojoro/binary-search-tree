@@ -220,9 +220,20 @@ class Tree {
     return depth;
   }
 
-  isBalanced() {}
+  isBalanced(node = this.root) {
+    if (!node) return -1;
+    let leftHeight = this.height(node.left);
+    let rightHeight = this.height(node.right);
+    return Math.abs(leftHeight - rightHeight) < 2;
+  }
 
-  rebalanced() {}
+  rebalance() {
+    const inorder = [];
+    tree.inOrder((node) => {
+      inorder.push(node.data);
+    });
+    this.root = this.sortedArrayToBST(inorder);
+  }
 }
 
 const prettyPrint = (node, prefix = "", isLeft = true) => {
@@ -253,6 +264,9 @@ tree.deleteItem(23);
 tree.insert(13);
 tree.insert(12);
 tree.insert(14);
+tree.insert(15);
+tree.insert(16);
+tree.insert(17);
 tree.deleteItem(8);
 prettyPrint(tree.root);
 
@@ -285,3 +299,8 @@ tree.postOrder((node) => {
 console.log(postorder);
 
 console.log(tree.depth(tree.find(7)));
+console.log("Balanced? " + tree.isBalanced());
+
+tree.rebalance();
+prettyPrint(tree.root);
+console.log("Balanced? " + tree.isBalanced());
