@@ -1,9 +1,8 @@
 class Node {
   constructor(data = null) {
-    this.data = null;
+    this.data = data;
     this.left = null;
     this.right = null;
-    if (data) this.data = data;
   }
 }
 
@@ -58,27 +57,27 @@ class Tree {
         noDuplicates.push(array[i]);
       }
     }
+
     return noDuplicates;
   }
 
   sortedArrayToBST(array) {
-    if (array.length == 1) {
-      return;
+    if (array.length === 0) {
+      return null; // Return null for empty arrays
+    } else if (array.length === 1) {
+      return new Node(array[0]); // Return a single node for single-element arrays
     } else if (array.length > 1) {
-      const mid = Math.ceil(array.length / 2);
-      const node = new Node(array[mid - 1]);
-      const left = 0;
-      const right = array.length;
-      const leftArray = array.slice(left, mid - 1);
-      const rightArray = array.slice(mid, right);
+      const mid = Math.floor(array.length / 2); // Use Math.floor for midpoint
+      const node = new Node(array[mid]);
+      const leftArray = array.slice(0, mid);
+      const rightArray = array.slice(mid + 1);
 
-      if (leftArray.length == 1) node.left = new Node(leftArray[0]);
-      else if (leftArray.length > 0)
+      if (leftArray.length > 0) {
         node.left = this.sortedArrayToBST(leftArray);
-
-      if (rightArray.length == 1) node.right = new Node(rightArray[0]);
-      else if (rightArray.length > 1)
+      }
+      if (rightArray.length > 0) {
         node.right = this.sortedArrayToBST(rightArray);
+      }
       return node;
     }
   }
@@ -257,50 +256,75 @@ function arrayOfRandomNumbers(arraySize, minSize = 0) {
   }
   return array;
 }
+const randoms = arrayOfRandomNumbers(35);
 
-const tree = new Tree([1, 7, 4, 23, 8, 9, 4, 3, 5, 7, 9, 67, 6345, 324]);
-prettyPrint(tree.root);
-tree.deleteItem(23);
-tree.insert(13);
-tree.insert(12);
-tree.insert(14);
-tree.insert(15);
-tree.insert(16);
-tree.insert(17);
-tree.deleteItem(8);
+const tree = new Tree(randoms);
+console.log("Balanced? " + tree.isBalanced());
+
 prettyPrint(tree.root);
 
 console.log("Level Order");
-const level = [];
+let level = [];
 tree.levelOrder((node) => {
   level.push(node.data);
 });
 console.log(level);
 
 console.log("Preorder");
-const preorder = [];
+let preorder = [];
 tree.preOrder((node) => {
   preorder.push(node.data);
 });
 console.log(preorder);
 
 console.log("Inorder");
-const inorder = [];
+let inorder = [];
 tree.inOrder((node) => {
   inorder.push(node.data);
 });
 console.log(inorder);
 
 console.log("Postorder");
-const postorder = [];
+let postorder = [];
 tree.postOrder((node) => {
   postorder.push(node.data);
 });
 console.log(postorder);
 
-console.log(tree.depth(tree.find(7)));
+const bigNumbers = arrayOfRandomNumbers(13, 100);
+for (const number of bigNumbers) {
+  tree.insert(number);
+}
+
+console.log("Balanced? " + tree.isBalanced());
+console.log("Rebalancing");
+tree.rebalance();
 console.log("Balanced? " + tree.isBalanced());
 
-tree.rebalance();
-prettyPrint(tree.root);
-console.log("Balanced? " + tree.isBalanced());
+console.log("Level Order");
+level = [];
+tree.levelOrder((node) => {
+  level.push(node.data);
+});
+console.log(level);
+
+console.log("Preorder");
+preorder = [];
+tree.preOrder((node) => {
+  preorder.push(node.data);
+});
+console.log(preorder);
+
+console.log("Inorder");
+inorder = [];
+tree.inOrder((node) => {
+  inorder.push(node.data);
+});
+console.log(inorder);
+
+console.log("Postorder");
+postorder = [];
+tree.postOrder((node) => {
+  postorder.push(node.data);
+});
+console.log(postorder);
